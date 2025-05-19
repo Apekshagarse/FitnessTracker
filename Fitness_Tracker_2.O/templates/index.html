@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fitness Tracker</title>
+</head>
+<body>
+    <h1>Fitness Tracker</h1>
+    {% if message %}
+        <p style="color: green;">{{ message }}</p>
+    {% endif %}
+    <form action="/submit" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" placeholder="Your name"><br><br>
+
+        <label for="date">Date:</label><br>
+        <input type="date" id="date" name="date"><br><br>
+
+        <label for="exercise">Exercise:</label><br>
+        <input type="text" id="exercise" name="exercise" placeholder="e.g. Running"><br><br>
+
+        <label for="duration">Duration (minutes):</label><br>
+        <input type="number" id="duration" name="duration"><br><br>
+
+        <label for="calories">Calories Burned:</label><br>
+        <input type="number" id="calories" name="calories"><br><br>
+
+        <button type="submit">Submit Workout</button>
+    </form>
+    <br>
+    <a href="/workouts">View Workout History</a>
+</body>
+</html>
