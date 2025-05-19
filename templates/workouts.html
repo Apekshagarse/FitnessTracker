@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workout History</title>
+</head>
+<body>
+    <h2>Workout History</h2>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Exercise</th>
+            <th>Duration (minutes)</th>
+            <th>Calories Burned</th>
+        </tr>
+        {% for workout in workouts %}
+        <tr>
+            <td>{{ workout.name }}</td>
+            <td>{{ workout.date }}</td>
+            <td>{{ workout.exercise }}</td>
+            <td>{{ workout.duration }}</td>
+            <td>{{ workout.calories }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/">Back to Home</a>
+</body>
+</html>
