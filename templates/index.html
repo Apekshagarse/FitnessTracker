@@ -6,9 +6,6 @@
 </head>
 <body>
     <h1>Fitness Tracker</h1>
-    {% if message %}
-        <p style="color: green;">{{ message }}</p>
-    {% endif %}
     <form action="/submit" method="post">
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="name" placeholder="Your name"><br><br>
