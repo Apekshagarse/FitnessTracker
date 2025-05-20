@@ -14,13 +14,13 @@
             <th>Duration (minutes)</th>
             <th>Calories Burned</th>
         </tr>
-        {% for workout in workouts %}
+        {% for w in workouts %}
         <tr>
-            <td>{{ workout.name }}</td>
-            <td>{{ workout.date }}</td>
-            <td>{{ workout.exercise }}</td>
-            <td>{{ workout.duration }}</td>
-            <td>{{ workout.calories }}</td>
+            <td><a href="/user/{{ w.name }}">{{ w.name }}</a></td>
+            <td>{{ w.date }}</td>
+            <td>{{ w.exercise }}</td>
+            <td>{{ w.duration }}</td>
+            <td>{{ w.calories }}</td>
         </tr>
         {% endfor %}
     </table>
