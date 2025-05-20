@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ name }}'s Calorie Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>{{ name }}'s Calorie Burn Over Time</h2>
+    <canvas id="calorieChart" width="600" height="300"></canvas>
+    <br>
+    <a href="/">Back to Home</a> | <a href="/workouts">Back to Workout History</a>
+
+    <script>
+        const ctx = document.getElementById('calorieChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ dates|tojson }},
+                datasets: [{
+                    label: 'Calories Burned',
+                    data: {{ calories|tojson }},
+                    borderColor: 'blue',
+                    backgroundColor: 'lightblue',
+                    fill: false,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Calories'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
