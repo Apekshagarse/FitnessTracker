@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string
+from flask import Flask, request, render_template, jsonify
 
 app = Flask(__name__)
 
@@ -22,29 +22,7 @@ def calculate_calories(exercise_type, duration_minutes, weight_kg):
 # Home route with form
 @app.route('/')
 def home():
-    return '''
-    <h1>Fitness Tracker</h1>
-    <form action="/submit" method="post">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" placeholder="Your name"><br><br>
-
-        <label for="weight">Your Weight (kg):</label><br>
-        <input type="number" id="weight" name="weight" step="0.1"><br><br>
-
-        <label for="date">Date:</label><br>
-        <input type="date" id="date" name="date"><br><br>
-
-        <label for="exercise">Exercise:</label><br>
-        <input type="text" id="exercise" name="exercise" placeholder="e.g. Running"><br><br>
-
-        <label for="duration">Duration (minutes):</label><br>
-        <input type="number" id="duration" name="duration"><br><br>
-
-        <button type="submit">Submit Workout</button>
-    </form>
-    <br>
-    <a href="/workouts">View Workout History</a>
-    '''
+    return render_template('index.html')
 
 # Submit form data and store
 @app.route('/submit', methods=['POST'])
@@ -71,29 +49,18 @@ def submit():
 # Display all workouts in table
 @app.route('/workouts')
 def show_workouts():
-    table_html = '''
-    <h2>Workout History</h2>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <tr>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Exercise</th>
-            <th>Duration (minutes)</th>
-            <th>Calories Burned</th>
-        </tr>
-    '''
-    for w in workouts:
-        table_html += f'''
-        <tr>
-            <td>{w["name"]}</td>
-            <td>{w["date"]}</td>
-            <td>{w["exercise"]}</td>
-            <td>{w["duration"]}</td>
-            <td>{w["calories"]}</td>
-        </tr>
-        '''
-    table_html += '</table><br><a href="/">Back to Home</a>'
-    return table_html
+    return render_template('workouts.html', workouts=workouts)
+
+@app.route('/user/<name>')
+def user_detail(name):
+    person_workouts = [w for w in workouts if w['name'].lower() == name.lower()]
+    if not person_workouts:
+        return f"No data found for {name}. <a href='/'>Back</a>"
+
+    dates = [w['date'] for w in person_workouts]
+    calories = [w['calories'] for w in person_workouts]
+    
+    return render_template('user_graph.html', name=name, dates=dates, calories=calories)
 
 if __name__ == '__main__':
     app.run(debug=True)
