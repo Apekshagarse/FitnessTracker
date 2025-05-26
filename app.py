@@ -1,66 +1,63 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, render_template, request, redirect
+import mysql.connector
 
 app = Flask(__name__)
 
-# In-memory data storage
-workouts = []
+# Connect to MySQL
+try:
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="Minal!1999",
+        database="fitness_tracker"
+    )
+    cursor = db.cursor()
+    print("✅ MySQL connection successful.")
+except mysql.connector.Error as err:
+    print("❌ Error connecting to MySQL:", err)
 
-# Calorie calculation function
-def calculate_calories(exercise_type, duration_minutes, weight_kg):
-    met_values = {
-        "running": 9.8,
-        "cycling": 7.5,
-        "weightlifting": 6.0,
-        "walking": 3.8,
-        "yoga": 3.0,
-        "jump rope": 12.0
-    }
-    met = met_values.get(exercise_type.lower(), 5.0)
-    duration_hours = duration_minutes / 60
-    return round(met * weight_kg * duration_hours, 2)
+    
+# Create table (run once or ensure exists)
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS workouts (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100),
+        date DATE,
+        exercise VARCHAR(100),
+        duration INT,
+        weight FLOAT
+    )
+""")
+db.commit()
 
-# Home route with form
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
-# Submit form data and store
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form['name']
     date = request.form['date']
     exercise = request.form['exercise']
-    duration = float(request.form['duration'])
-    weight = float(request.form['weight'])
+    duration = request.form['duration']
+    weight = request.form['weight'] or None
 
-    calories = calculate_calories(exercise, duration, weight)
+    query = "INSERT INTO workouts (name, date, exercise, duration, weight) VALUES (%s, %s, %s, %s, %s)"
+    values = (name, date, exercise, duration, weight)
+    cursor.execute(query, values)
+    db.commit()
 
-    data = {
-        'name': name,
-        'date': date,
-        'exercise': exercise,
-        'duration': duration,
-        'calories': calories
-    }
-    workouts.append(data)
+    return redirect('/workouts')
 
-    return f"Workout added! Calories burned: {calories} <br><a href='/'>Back to Home</a> | <a href='/workouts'>View Workouts</a>"
-
-# Display all workouts in table
 @app.route('/workouts')
-def show_workouts():
+def workouts():
+    cursor.execute("SELECT name, date, exercise, duration, weight FROM workouts ORDER BY date DESC")
+    data = cursor.fetchall()
+    workouts = [
+        {"name": row[0], "date": row[1], "exercise": row[2], "duration": row[3], "weight": row[4]}
+        for row in data
+    ]
     return render_template('workouts.html', workouts=workouts)
-
-@app.route('/user/<name>')
-def user_detail(name):
-    person_workouts = [w for w in workouts if w['name'].lower() == name.lower()]
-    if not person_workouts:
-        return f"No data found for {name}. <a href='/'>Back</a>"
-
-    dates = [w['date'] for w in person_workouts]
-    calories = [w['calories'] for w in person_workouts]
-    
-    return render_template('user_graph.html', name=name, dates=dates, calories=calories)
 
 if __name__ == '__main__':
     app.run(debug=True)
