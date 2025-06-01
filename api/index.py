@@ -1,13 +1,15 @@
-from flask import Flask, render_template, request, redirect
+# api/index.py
+
+from flask import Flask, request, render_template, redirect
+from flask_cors import CORS
 import mysql.connector
-from collections import defaultdict
+from flask import send_from_directory
 import os
-from dotenv import load_dotenv
 
-load_dotenv()  # Load values from .env
-app = Flask(__name__, template_folder = "../templates")
+app = Flask(__name__, template_folder="../templates")
+CORS(app)
 
-# Connect to MySQL
+# MySQL connection
 try:
     db = mysql.connector.connect(
         host=os.getenv("MYSQL_HOST"),
@@ -21,19 +23,6 @@ try:
 except mysql.connector.Error as err:
     print("❌ Error connecting to MySQL:", err)
 
-    
-# Create table (run once or ensure exists)
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS workouts (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100),
-        date DATE,
-        exercise VARCHAR(100),
-        duration INT,
-        weight FLOAT
-    )
-""")
-db.commit()
 
 @app.route('/')
 def index():
@@ -66,19 +55,13 @@ def workouts():
 
 @app.route('/user/<string:name>')
 def user_graph(name):
-    cursor.execute("""
-        SELECT date, duration, weight
-        FROM workouts
-        WHERE name = %s
-        ORDER BY date ASC
-    """, (name,))
+    cursor.execute("SELECT date, duration, weight FROM workouts WHERE name = %s ORDER BY date ASC", (name,))
     data = cursor.fetchall()
-
     dates = [str(row[0]) for row in data]
     durations = [row[1] for row in data]
     weights = [row[2] for row in data]
-
     return render_template('user_graph.html', user=name, dates=dates, durations=durations, weights=weights)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Export app for Vercel
+def handler(request, response):
+    return app(request.environ, response.start_response)
