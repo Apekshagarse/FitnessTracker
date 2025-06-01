@@ -11,7 +11,7 @@ app = Flask(__name__, template_folder = "../templates")
 try:
     db = mysql.connector.connect(
         host=os.getenv("MYSQL_HOST"),
-        port=int(os.getenv("MYSQL_PORT", 3306)),
+        port=int(os.getenv("MYSQL_PORT", 8000)),
         user=os.getenv("MYSQL_USER"),
         password=os.getenv("MYSQL_PASSWORD"),
         database=os.getenv("MYSQL_DATABASE")
