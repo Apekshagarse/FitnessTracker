@@ -1,0 +1,51 @@
+<!-- templates/user_graph.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ user }}'s Workout Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Workout Stats for {{ user }}</h2>
+    <canvas id="workoutChart" width="400" height="200"></canvas>
+    <script>
+        const labels = {{ dates | tojson }};
+        const duration = {{ durations | tojson }};
+        const weight = {{ weights | tojson }};
+
+        const data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Duration (min)',
+                    data: durations,
+                    borderColor: 'blue',
+                    fill: false
+                },
+                {
+                    label: 'Weight (kg)',
+                    data: weights,
+                    borderColor: 'green',
+                    fill: false
+                }
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Workout Progress' }
+                }
+            }
+        };
+
+        new Chart(document.getElementById('workoutChart'), config);
+    </script>
+    <br>
+    <a href="/workouts">Back to Workouts</a>
+</body>
+</html>
