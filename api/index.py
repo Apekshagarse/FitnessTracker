@@ -28,7 +28,7 @@ def submit():
         name = request.form['name']
         date = request.form['date']
         exercise = request.form['exercise']
-        duration = request.form['duration']
+        duration = int(request.form['duration'])
         weight = request.form['weight'] or None
 
         query = "INSERT INTO workouts (name, date, exercise, duration, weight) VALUES (%s, %s, %s, %s, %s)"
