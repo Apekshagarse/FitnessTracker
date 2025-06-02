@@ -25,9 +25,8 @@ except mysql.connector.Error as err:
 
 
 @app.route('/')
-def home():
-    return "App is running"
-
+def index():
+    return render_template('index.html')
 
 @app.route('/submit', methods=['POST'])
 def submit():
