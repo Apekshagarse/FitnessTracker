@@ -50,7 +50,7 @@
         </tr>
         {% for workout in workouts %}
         <tr>
-            <td><a href="/user/{{ workout['name'] }}">{{ workout['name'] }}</a></td>
+            <td>{{ workout['name'] }}</td>
             <td>{{ workout['date'] }}</td>
             <td>{{ workout['exercise'] }}</td>
             <td>{{ workout['duration'] }}</td>
