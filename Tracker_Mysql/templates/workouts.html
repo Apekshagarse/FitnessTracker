@@ -1,0 +1,65 @@
+<!-- templates/workouts.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Workouts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f2f2f2;
+        }
+
+        form, table {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007BFF;
+        }
+    </style>
+
+</head>
+<body>
+    <h2>Submitted Workouts</h2>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Exercise</th>
+            <th>Duration (min)</th>
+            <th>Weight (kg)</th>
+        </tr>
+        {% for workout in workouts %}
+        <tr>
+            <td><a href="/user/{{ workout['name'] }}">{{ workout['name'] }}</a></td>
+            <td>{{ workout['date'] }}</td>
+            <td>{{ workout['exercise'] }}</td>
+            <td>{{ workout['duration'] }}</td>
+            <td>{{ workout['weight'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/">Back to Entry</a>
+    <!-- inside workouts.html -->
+</body>
+</html>
